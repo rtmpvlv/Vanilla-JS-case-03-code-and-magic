@@ -1,4 +1,4 @@
-export default function startGame(
+export default function startGame (
   fireballSize,
   getFireballSpeed,
   wizardWidth,
@@ -28,19 +28,19 @@ export default function startGame(
       },
     },
   };
-
+  
   /**
      * @const
      * @type {number}
      */
   const HEIGHT = 300;
-
+  
   /**
      * @const
      * @type {number}
      */
   const WIDTH = 700;
-
+  
   /**
      * ID уровней.
      * @enum {number}
@@ -52,9 +52,9 @@ export default function startGame(
     LEVITATE: 3,
     HIT_THE_MARK: 4,
   };
-
+  
   const NAMES = ['Кекс', 'Катя', 'Игорь'];
-
+  
   /**
      * Порядок прохождения уровней.
      * @type {Array.<Level>}
@@ -62,13 +62,13 @@ export default function startGame(
   const LevelSequence = [
     Level.INTRO,
   ];
-
+  
   /**
      * Начальный уровень.
      * @type {Level}
      */
   const INITIAL_LEVEL = LevelSequence[0];
-
+  
   /**
      * Допустимые виды объектов на карте.
      * @enum {number}
@@ -77,7 +77,7 @@ export default function startGame(
     ME: 0,
     FIREBALL: 1,
   };
-
+  
   /**
      * Допустимые состояния объектов.
      * @enum {number}
@@ -86,7 +86,7 @@ export default function startGame(
     OK: 0,
     DISPOSED: 1,
   };
-
+  
   /**
      * Коды направлений.
      * @enum {number}
@@ -98,39 +98,39 @@ export default function startGame(
     UP: 4,
     DOWN: 8,
   };
-
+  
   /**
      * Карта спрайтов игры.
      * @type {Object.<ObjectType, Object>}
      */
   const SpriteMap = {};
   const REVERSED = '-reversed';
-
+  
   SpriteMap[ObjectType.ME] = {
     width: 61,
     height: 84,
     url: 'img/wizard.gif',
   };
-
+  
   // TODO: Find a clever way
   SpriteMap[ObjectType.ME + REVERSED] = {
     width: 61,
     height: 84,
     url: 'img/wizard-reversed.gif',
   };
-
+  
   SpriteMap[ObjectType.FIREBALL] = {
     width: 24,
     height: 24,
     url: 'img/fireball.gif',
   };
-
+  
   /**
      * Правила перерисовки объектов в зависимости от состояния игры.
      * @type {Object.<ObjectType, function(Object, Object, number): Object>}
      */
   const ObjectsBehaviour = {};
-
+  
   /**
      * Обновление движения мага. Движение мага зависит от нажатых в данный момент
      * стрелок. Маг может двигаться одновременно по горизонтали и по вертикали.
@@ -145,53 +145,53 @@ export default function startGame(
     // NB! Сложность заключается в том, что поведение описано в координатах
     // канваса, а не координатах, относительно нижней границы игры.
     if (state.keysPressed.UP && object.y > 0) {
-      object.direction &= ~Direction.DOWN;
-      object.direction |= Direction.UP;
+      object.direction = object.direction & ~Direction.DOWN;
+      object.direction = object.direction | Direction.UP;
       object.y -= object.speed * timeframe * 2;
     }
-
+  
     // Если стрелка вверх не зажата, а маг находится в воздухе, он плавно
     // опускается на землю.
     if (!state.keysPressed.UP) {
       if (object.y < HEIGHT - object.height) {
-        object.direction &= ~Direction.UP;
-        object.direction |= Direction.DOWN;
+        object.direction = object.direction & ~Direction.UP;
+        object.direction = object.direction | Direction.DOWN;
         object.y += object.speed * timeframe / 3;
       }
     }
-
+  
     // Если зажата стрелка влево, маг перемещается влево.
     if (state.keysPressed.LEFT) {
-      object.direction &= ~Direction.RIGHT;
-      object.direction |= Direction.LEFT;
+      object.direction = object.direction & ~Direction.RIGHT;
+      object.direction = object.direction | Direction.LEFT;
       object.x -= object.speed * timeframe;
     }
-
+  
     // Если зажата стрелка вправо, маг перемещается вправо.
     if (state.keysPressed.RIGHT) {
-      object.direction &= ~Direction.LEFT;
-      object.direction |= Direction.RIGHT;
+      object.direction = object.direction & ~Direction.LEFT;
+      object.direction = object.direction | Direction.RIGHT;
       object.x += object.speed * timeframe;
     }
-
+  
     // Ограничения по перемещению по полю. Маг не может выйти за пределы поля.
     if (object.y < 0) {
       object.y = 0;
     }
-
+  
     if (object.y > HEIGHT - object.height) {
       object.y = HEIGHT - object.height;
     }
-
+  
     if (object.x < 0) {
       object.x = 0;
     }
-
+  
     if (object.x > WIDTH - object.width) {
       object.x = WIDTH - object.width;
     }
   };
-
+  
   /**
      * Обновление движения файрбола. Файрбол выпускается в определенном направлении
      * и после этого неуправляемо движется по прямой в заданном направлении. Если
@@ -204,16 +204,16 @@ export default function startGame(
     if (object.direction & Direction.LEFT) {
       object.x -= object.speed * timeframe;
     }
-
+  
     if (object.direction & Direction.RIGHT) {
       object.x += object.speed * timeframe;
     }
-
+  
     if (object.x < 0 || object.x > WIDTH) {
       object.state = ObjectState.DISPOSED;
     }
   };
-
+  
   /**
      * ID возможных ответов функций, проверяющих успех прохождения уровня.
      * CONTINUE говорит о том, что раунд не закончен и игру нужно продолжать,
@@ -228,7 +228,7 @@ export default function startGame(
     PAUSE: 3,
     INTRO: 4,
   };
-
+  
   /**
      * Правила завершения уровня. Ключами служат ID уровней, значениями функции
      * принимающие на вход состояние уровня и возвращающие true, если раунд
@@ -236,7 +236,7 @@ export default function startGame(
      * @type {Object.<Level, function(Object):boolean>}
      */
   const LevelsRules = {};
-
+  
   /**
      * Уровень считается пройденным, если был выпущен файлболл и он улетел
      * за экран.
@@ -244,21 +244,24 @@ export default function startGame(
      * @return {Verdict}
      */
   LevelsRules[Level.INTRO] = function (state) {
-    const deletedFireballs = state.garbage.filter((object) => object.type === ObjectType.FIREBALL);
-
-    const fenceHit = deletedFireballs.filter((fireball) =>
+    const deletedFireballs = state.garbage.filter(function (object) {
+      return object.type === ObjectType.FIREBALL;
+    });
+  
+    const fenceHit = deletedFireballs.filter(function (fireball) {
       // Did we hit the fence?
-      fireball.x < 10 && fireball.y > 240)[0];
-
+      return fireball.x < 10 && fireball.y > 240;
+    })[0];
+  
     return fenceHit ? Verdict.WIN : Verdict.CONTINUE;
   };
-
+  
   /**
      * Начальные условия для уровней.
      * @enum {Object.<Level, function>}
      */
   const LevelsInitialize = {};
-
+  
   /**
      * Первый уровень.
      * @param {Object} state
@@ -281,10 +284,10 @@ export default function startGame(
         y: GameConstants.Wizard.getY(HEIGHT),
       },
     );
-
+  
     return state;
   };
-
+  
   /**
      * Конструктор объекта Game. Создает canvas, добавляет обработчики событий
      * и показывает приветственный экран.
@@ -297,54 +300,54 @@ export default function startGame(
     this.canvas.width = container.clientWidth;
     this.canvas.height = container.clientHeight;
     this.container.appendChild(this.canvas);
-
+  
     this.ctx = this.canvas.getContext('2d');
-
+  
     this._onKeyDown = this._onKeyDown.bind(this);
     this._onKeyUp = this._onKeyUp.bind(this);
     this._pauseListener = this._pauseListener.bind(this);
-
+  
     this.setDeactivated(false);
   };
-
+  
   Game.prototype = {
     /**
        * Текущий уровень игры.
        * @type {Level}
        */
     level: INITIAL_LEVEL,
-
+  
     /** @param {boolean} deactivated */
-    setDeactivated(deactivated) {
+    setDeactivated: function (deactivated) {
       if (this._deactivated === deactivated) {
         return;
       }
-
+  
       this._deactivated = deactivated;
-
+  
       if (deactivated) {
         this._removeGameListeners();
       } else {
         this._initializeGameListeners();
       }
     },
-
+  
     /**
        * Состояние игры. Описывает местоположение всех объектов на игровой карте
        * и время проведенное на уровне и в игре.
        * @return {Object}
        */
-    getInitialState() {
+    getInitialState: function () {
       return {
         // Статус игры. Если CONTINUE, то игра продолжается.
         currentStatus: Verdict.CONTINUE,
-
+  
         // Объекты, удаленные на последнем кадре.
         garbage: [],
-
+  
         // Время с момента отрисовки предыдущего кадра.
         lastUpdated: null,
-
+  
         // Состояние нажатых клавиш.
         keysPressed: {
           ESC: false,
@@ -353,25 +356,25 @@ export default function startGame(
           SPACE: false,
           UP: false,
         },
-
+  
         // Время начала прохождения уровня.
         levelStartTime: null,
-
+  
         // Все объекты на карте.
         objects: [],
-
+  
         // Время начала прохождения игры.
         startTime: null,
       };
     },
-
+  
     /**
        * Начальные проверки и запуск текущего уровня.
        * @param {boolean=} restart
        */
-    initializeLevelAndStart(restart) {
+    initializeLevelAndStart: function (restart) {
       restart = typeof restart === 'undefined' ? true : restart;
-
+  
       if (restart || !this.state) {
         // При перезапуске уровня, происходит полная перезапись состояния
         // игры из изначального состояния.
@@ -382,71 +385,73 @@ export default function startGame(
         // что состояние уровня изменилось с паузы на продолжение игры.
         this.state.currentStatus = Verdict.CONTINUE;
       }
-
+  
       // Запись времени начала игры и времени начала уровня.
       this.state.levelStartTime = Date.now();
       if (!this.state.startTime) {
         this.state.startTime = this.state.levelStartTime;
       }
-
-      this._preloadImagesForLevel(() => {
+  
+      this._preloadImagesForLevel(function () {
         // Предварительная отрисовка игрового экрана.
         this.render();
-
+  
         // Установка обработчиков событий.
         this._initializeGameListeners();
-
+  
         // Запуск игрового цикла.
         this.update();
-      });
+      }.bind(this));
     },
-
+  
     /**
        * Временная остановка игры.
        * @param {Verdict=} verdict
        */
-    pauseLevel(verdict) {
+    pauseLevel: function (verdict) {
       if (verdict) {
         this.state.currentStatus = verdict;
       }
-
+  
       this.state.keysPressed.ESC = false;
       this.state.lastUpdated = null;
-
+  
       this._removeGameListeners();
       window.addEventListener('keydown', this._pauseListener);
-
+  
       this._drawPauseScreen();
     },
-
+  
     /**
        * Обработчик событий клавиатуры во время паузы.
        * @param {KeyboardsEvent} evt
        * @private
        * @private
        */
-    _pauseListener(evt) {
+    _pauseListener: function (evt) {
       if (evt.keyCode === 32 && !this._deactivated) {
         evt.preventDefault();
-        const needToRestartTheGame = this.state.currentStatus === Verdict.WIN
-            || this.state.currentStatus === Verdict.FAIL;
+        const needToRestartTheGame = this.state.currentStatus === Verdict.WIN ||
+            this.state.currentStatus === Verdict.FAIL;
         this.initializeLevelAndStart(needToRestartTheGame);
-
+  
         window.removeEventListener('keydown', this._pauseListener);
       }
     },
-
+  
     /**
        * Отрисовка экрана паузы.
        */
-    _drawPauseScreen() {
+    _drawPauseScreen: function () {
       let message;
       switch (this.state.currentStatus) {
         case Verdict.WIN:
           if (window.renderStatistics) {
             const statistics = this._generateStatistics(new Date() - this.state.startTime);
             const keys = this._schuffleArray(Object.keys(statistics));
-            window.renderStatistics(this.ctx, keys, keys.map((it) => statistics[it]));
+            window.renderStatistics(this.ctx, keys, keys.map(function (it) {
+              return statistics[it];
+            }));
             return;
           }
           message = 'Вы победили Газебо!\nУра!';
@@ -461,18 +466,18 @@ export default function startGame(
           message = 'Добро пожаловать!\nНажмите Пробел для начала игры';
           break;
       }
-
+  
       this._drawMessage(message);
     },
-
-    _generateStatistics(time) {
+  
+    _generateStatistics: function (time) {
       const generationIntervalSec = 3000;
       const minTimeInSec = 1000;
-
+  
       const statistic = {
-        Вы: time,
+        'Вы': time,
       };
-
+  
       for (let i = 0; i < NAMES.length; i++) {
         const diffTime = Math.random() * generationIntervalSec;
         let userTime = time + (diffTime - generationIntervalSec / 2);
@@ -481,11 +486,11 @@ export default function startGame(
         }
         statistic[NAMES[i]] = userTime;
       }
-
+  
       return statistic;
     },
-
-    _schuffleArray(array) {
+  
+    _schuffleArray: function (array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         const temp = array[i];
@@ -494,10 +499,10 @@ export default function startGame(
       }
       return array;
     },
-
-    _drawMessage(message) {
-      const { ctx } = this;
-
+  
+    _drawMessage: function (message) {
+      const ctx = this.ctx;
+  
       const drawCloud = function (x, y, width, heigth) {
         const offset = 10;
         ctx.beginPath();
@@ -514,40 +519,40 @@ export default function startGame(
         ctx.closePath();
         ctx.fill();
       };
-
+  
       ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
       drawCloud(190, 40, 320, 100);
-
+  
       ctx.fillStyle = 'rgba(256, 256, 256, 1.0)';
       drawCloud(180, 30, 320, 100);
-
+  
       ctx.fillStyle = '#000';
       ctx.font = '16px PT Mono';
-      message.split('\n').forEach((line, i) => {
+      message.split('\n').forEach(function (line, i) {
         ctx.fillText(line, 200, 80 + 20 * i);
       });
     },
-
+  
     /**
        * Предзагрузка необходимых изображений для уровня.
        * @param {function} callback
        * @private
        */
-    _preloadImagesForLevel(callback) {
+    _preloadImagesForLevel: function (callback) {
       if (typeof this._imagesArePreloaded === 'undefined') {
         this._imagesArePreloaded = [];
       }
-
+  
       if (this._imagesArePreloaded[this.level]) {
         callback();
         return;
       }
-
+  
       const keys = Object.keys(SpriteMap);
       let imagesToGo = keys.length;
-
+  
       const self = this;
-
+  
       const loadSprite = function (sprite) {
         const image = new Image(sprite.width, sprite.height);
         image.onload = function () {
@@ -559,22 +564,24 @@ export default function startGame(
         };
         image.src = sprite.url;
       };
-
+  
       for (let i = 0; i < keys.length; i++) {
         loadSprite(SpriteMap[keys[i]]);
       }
     },
-
+  
     /**
        * Обновление статуса объектов на экране. Добавляет объекты, которые должны
        * появиться, выполняет проверку поведения всех объектов и удаляет те, которые
        * должны исчезнуть.
        * @param {number} delta Время, прошеднее с отрисовки прошлого кадра.
        */
-    updateObjects(delta) {
+    updateObjects: function (delta) {
       // Персонаж.
-      const me = this.state.objects.filter((object) => object.type === ObjectType.ME)[0];
-
+      const me = this.state.objects.filter(function (object) {
+        return object.type === ObjectType.ME;
+      })[0];
+  
       // Добавляет на карту файрбол по нажатию на Shift.
       if (this.state.keysPressed.SHIFT) {
         this.state.objects.push({
@@ -587,54 +594,56 @@ export default function startGame(
           x: me.direction & Direction.RIGHT ? me.x + me.width : me.x - GameConstants.Fireball.size,
           y: me.y + me.height / 2,
         });
-
+  
         this.state.keysPressed.SHIFT = false;
       }
-
+  
       this.state.garbage = [];
-
+  
       // Убирает в garbage не используемые на карте объекты.
       const remainingObjects = this.state.objects.filter(function (object) {
         ObjectsBehaviour[object.type](object, this.state, delta);
-
+  
         if (object.state === ObjectState.DISPOSED) {
           this.state.garbage.push(object);
           return false;
         }
-
+  
         return true;
       }, this);
-
+  
       this.state.objects = remainingObjects;
     },
-
+  
     /**
        * Проверка статуса текущего уровня.
        */
-    checkStatus() {
+    checkStatus: function () {
       // Нет нужны запускать проверку, нужно ли останавливать уровень, если
       // заранее известно, что да.
       if (this.state.currentStatus !== Verdict.CONTINUE) {
         return;
       }
-
+  
       if (!this.commonRules) {
         // Проверки, не зависящие от уровня, но влияющие на его состояние.
         this.commonRules = [
-
+  
           /**
              * Если персонаж мертв, игра прекращается.
              * @param {Object} state
              * @return {Verdict}
              */
           function (state) {
-            const me = state.objects.filter((object) => object.type === ObjectType.ME)[0];
-
-            return me.state === ObjectState.DISPOSED
-              ? Verdict.FAIL
-              : Verdict.CONTINUE;
+            const me = state.objects.filter(function (object) {
+              return object.type === ObjectType.ME;
+            })[0];
+  
+            return me.state === ObjectState.DISPOSED ?
+              Verdict.FAIL :
+              Verdict.CONTINUE;
           },
-
+  
           /**
              * Если нажата клавиша Esc игра ставится на паузу.
              * @param {Object} state
@@ -643,20 +652,20 @@ export default function startGame(
           function (state) {
             return state.keysPressed.ESC ? Verdict.PAUSE : Verdict.CONTINUE;
           },
-
+  
           /**
              * Игра прекращается если игрок продолжает играть в нее два часа подряд.
              * @param {Object} state
              * @return {Verdict}
              */
           function (state) {
-            return Date.now() - state.startTime > 3 * 60 * 1000
-              ? Verdict.FAIL
-              : Verdict.CONTINUE;
+            return Date.now() - state.startTime > 3 * 60 * 1000 ?
+              Verdict.FAIL :
+              Verdict.CONTINUE;
           },
         ];
       }
-
+  
       // Проверка всех правил влияющих на уровень. Запускаем цикл проверок
       // по всем универсальным проверкам и проверкам конкретного уровня.
       // Цикл продолжается до тех пор, пока какая-либо из проверок не вернет
@@ -665,15 +674,15 @@ export default function startGame(
       const allChecks = this.commonRules.concat(LevelsRules[this.level]);
       let currentCheck = Verdict.CONTINUE;
       let currentRule;
-
+  
       while (currentCheck === Verdict.CONTINUE && allChecks.length) {
         currentRule = allChecks.shift();
         currentCheck = currentRule(this.state);
       }
-
+  
       this.state.currentStatus = currentCheck;
     },
-
+  
     /**
        * Принудительная установка состояния игры. Используется для изменения
        * состояния игры от внешних условий, например, когда необходимо остановить
@@ -681,19 +690,19 @@ export default function startGame(
        * экран.
        * @param {Verdict} status
        */
-    setGameStatus(status) {
+    setGameStatus: function (status) {
       if (this.state.currentStatus !== status) {
         this.state.currentStatus = status;
       }
     },
-
+  
     /**
        * Отрисовка всех объектов на экране.
        */
-    render() {
+    render: function () {
       // Удаление всех отрисованных на странице элементов.
       this.ctx.clearRect(0, 0, WIDTH, HEIGHT);
-
+  
       // Выставление всех элементов, оставшихся в this.state.objects согласно
       // их координатам и направлению.
       this.state.objects.forEach(function (object) {
@@ -704,31 +713,31 @@ export default function startGame(
         }
       }, this);
     },
-
+  
     /**
        * Основной игровой цикл. Сначала проверяет состояние всех объектов игры
        * и обновляет их согласно правилам их поведения, а затем запускает
        * проверку текущего раунда. Рекурсивно продолжается до тех пор, пока
        * проверка не вернет состояние FAIL, WIN или PAUSE.
        */
-    update() {
+    update: function () {
       if (!this.state.lastUpdated) {
         this.state.lastUpdated = Date.now();
       }
-
+  
       const delta = (Date.now() - this.state.lastUpdated) / 10;
       this.updateObjects(delta);
       this.checkStatus();
-
+  
       switch (this.state.currentStatus) {
         case Verdict.CONTINUE:
           this.state.lastUpdated = Date.now();
           this.render();
-          requestAnimationFrame(() => {
+          requestAnimationFrame(function () {
             this.update();
-          });
+          }.bind(this));
           break;
-
+  
         case Verdict.WIN:
         case Verdict.FAIL:
         case Verdict.PAUSE:
@@ -737,12 +746,12 @@ export default function startGame(
           break;
       }
     },
-
+  
     /**
        * @param {KeyboardEvent} evt [description]
        * @private
        */
-    _onKeyDown(evt) {
+    _onKeyDown: function (evt) {
       switch (evt.keyCode) {
         case 37:
           this.state.keysPressed.LEFT = true;
@@ -757,17 +766,17 @@ export default function startGame(
           this.state.keysPressed.ESC = true;
           break;
       }
-
+  
       if (evt.shiftKey) {
         this.state.keysPressed.SHIFT = true;
       }
     },
-
+  
     /**
        * @param {KeyboardEvent} evt [description]
        * @private
        */
-    _onKeyUp(evt) {
+    _onKeyUp: function (evt) {
       switch (evt.keyCode) {
         case 37:
           this.state.keysPressed.LEFT = false;
@@ -782,30 +791,31 @@ export default function startGame(
           this.state.keysPressed.ESC = false;
           break;
       }
-
+  
       if (evt.shiftKey) {
         this.state.keysPressed.SHIFT = false;
       }
     },
-
+  
     /** @private */
-    _initializeGameListeners() {
+    _initializeGameListeners: function () {
       window.addEventListener('keydown', this._onKeyDown);
       window.addEventListener('keyup', this._onKeyUp);
     },
-
+  
     /** @private */
-    _removeGameListeners() {
+    _removeGameListeners: function () {
       window.removeEventListener('keydown', this._onKeyDown);
       window.removeEventListener('keyup', this._onKeyUp);
     },
   };
-
+  
   Game.Verdict = Verdict;
-
+  
   const game = new Game(document.querySelector('.demo'));
   game.initializeLevelAndStart();
   game.setGameStatus(Verdict.INTRO);
-
+  
   return game;
 }
+  

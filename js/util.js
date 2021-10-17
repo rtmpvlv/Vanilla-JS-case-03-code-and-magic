@@ -2,11 +2,17 @@
 
 const ALERT_SHOW_TIME = 5000;
 
-const getRandomArrayElement = (elements) => elements[_.random(0, elements.length - 1)];
+const getRandomArrayElement = (elements) => {
+  return elements[_.random(0, elements.length - 1)];
+};
 
-const isEscEvent = (evt) => evt.key === ('Escape' || 'Esc');
+const isEscEvent = (evt) => {
+  return evt.key === 'Escape' || evt.key === 'Esc';
+};
 
-const isEnterEvent = (evt) => evt.key === ('Enter');
+const isEnterEvent = (evt) => {
+  return evt.key === 'Enter';
+};
 
 const showAlert = (message) => {
   const alertContainer = document.createElement('div');
@@ -27,7 +33,7 @@ const showAlert = (message) => {
   setTimeout(() => {
     alertContainer.remove();
   }, ALERT_SHOW_TIME);
-};
+}
 
 export {
   getRandomArrayElement,

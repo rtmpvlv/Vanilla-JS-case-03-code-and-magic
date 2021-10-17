@@ -4,7 +4,7 @@ const FIREBALL_SIZE = 22;
 const WIZARD_WIDTH = 70;
 const WIZARD_SPEED = 3;
 
-const getFireballSpeed = (isMovingLeft) => (isMovingLeft ? 2 : 5);
+const getFireballSpeed = (isMovingLeft) => isMovingLeft ? 2 : 5;
 
 const getWizardHeight = () => 1.337 * WIZARD_WIDTH;
 

@@ -1,10 +1,10 @@
-import { isEscEvent, isEnterEvent } from './util.js';
+import {isEscEvent, isEnterEvent} from './util.js';
 
 const userModalElement = document.querySelector('.setup');
 const userModalOpenElement = document.querySelector('.setup-open');
 const userModalCloseElement = userModalElement.querySelector('.setup-close');
 
-const openPopupEscKeydown = (evt) => {
+const onPopupEscKeydown = (evt) => {
   if (isEscEvent(evt)) {
     evt.preventDefault();
     closeUserModal();
@@ -13,14 +13,12 @@ const openPopupEscKeydown = (evt) => {
 
 const openUserModal = () => {
   userModalElement.classList.remove('hidden');
-
-  document.addEventListener('keydown', openPopupEscKeydown);
+  document.addEventListener('keydown', onPopupEscKeydown);
 };
 
 const closeUserModal = () => {
   userModalElement.classList.add('hidden');
-
-  document.removeEventListener('keydown', openPopupEscKeydown);
+  document.removeEventListener('keydown', onPopupEscKeydown);
 };
 
 userModalOpenElement.addEventListener('click', () => {
@@ -43,7 +41,4 @@ userModalCloseElement.addEventListener('keydown', (evt) => {
   }
 });
 
-export {
-  openUserModal,
-  closeUserModal
-};
+export {openUserModal, closeUserModal};

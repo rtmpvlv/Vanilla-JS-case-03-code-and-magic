@@ -46,7 +46,7 @@
 
     <h1 class="header-title section-title">
       Code and Magick
-      <img src="img/title-site.png" alt="Code and magick">
+      <img src="img//title-site.png" alt="Code and magick">
     </h1>
     <p class="header-description">
       Это игра, где главного героя, которым вам предстоит управлять и изменять заклинаниями окружающий мир зовут
@@ -57,7 +57,7 @@
     <div class="demo"></div>
 
     <div class="setup-open">
-      <img src="./img/user-1.jpg" class="setup-open-icon" tabindex="0">
+      <img src="img//user-1.jpg" class="setup-open-icon">
     </div>
   </header>
 
@@ -67,20 +67,20 @@
       <div class="setup-title">
         <div class="setup-user">
           <div class="upload">
-            <img class="setup-user-pic" src="./img/user-1.jpg">
-            <input type="file" name="avatar" accept="image/png, image/jpg">
+            <img class="setup-user-pic" src="img//user-1.jpg">
+            <input type="file" name="avatar" accept="image/png, image/jpeg">
           </div>
           <label>
-            <input type="text" class="setup-user-name" name="setup-user-name" value="Синий Пендальф" required minlength="2" maxlength="25">
+            <input type="text" class="setup-user-name" value="Синий Пендальф" name="username" required minlength="2" maxlength="25">
           </label>
         </div>
 
-        <span class="setup-close" tabindex="0">×</span>
+        <span class="setup-close">×</span>
       </div>
 
 
       <div class="setup-artifacts-shop">
-        <div class="setup-artifacts-cell"><img src="img/icon-star.png" alt="Star" draggable="true" width="65" height="50">
+        <div class="setup-artifacts-cell"><img src="img//icon-star.png" alt="Star" draggable="true" width="65" height="50">
         </div>
         <div class="setup-artifacts-cell"></div>
         <div class="setup-artifacts-cell"></div>
@@ -103,13 +103,14 @@
                 <use xlink:href="#wizard-hands" class="wizard-hands"></use>
               </g>
             </svg>
-            <input type="hidden" name="coat-color" value="rgb(101, 137, 164)">
-            <input type="hidden" name="eyes-color" value="black">
           </div>
+          <input type="hidden" name="coat-color" value="rgb(101, 137, 164)">
+          <input type="hidden" name="eyes-color" value="black">
         </div>
 
         <div class="setup-fireball-wrap">
           <div class="setup-fireball"></div>
+          <input type="hidden" name="fireball-color" value="#ee4830">
         </div>
 
         <div class="setup-artifacts" dropzone="move">
@@ -151,7 +152,7 @@
   </div>
 
   <footer>
-    <p><a href="http://htmlacademy.ru" class="footer-link"><img src="img/htmlacademy-logo.png" alt="HTML Academy" width="130">Сделано в HTML Academy</a>в 2017 году</p>
+    <p><a href="http://htmlacademy.ru" class="footer-link"><img src="img//htmlacademy-logo.png" alt="HTML Academy" width="130">Сделано в HTML Academy</a>в 2017 году</p>
   </footer>
 
   <template id="similar-wizard-template" style="display: none">
